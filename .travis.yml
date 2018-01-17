@@ -14,7 +14,10 @@ before_install:
   - git config --global user.name "howi-bot"
 
 script:
-  - git filter-branch --prune-empty --subdirectory-filter public master
+  - git filter-branch --prune-empty --env-filter '
+      GIT_COMMITTER_NAME="howi-bot";
+      GIT_COMMITTER_EMAIL="howi@okramlabs.com";' --subdirectory-filter public master
+
   - git remote add ghpage git@github.com:okramlabs/okramlabs.github.io.git
   - git push -f ghpage master
 
