@@ -14,6 +14,15 @@ before_install:
   - git config --global user.name "howi-bot"
 
 script:
+  - git checkout -b builder
+  - mkdir public
+  - cp $TRAVIS_BUILD_DIR/LICENSE-content $TRAVIS_BUILD_DIR/public/LICENSE
+  - echo "<h1>okramlabs.github.io</h1>" > $TRAVIS_BUILD_DIR/public/index.html
+  - git add $TRAVIS_BUILD_DIR/public
+  - BUILDREF='1.0.0:bookmark:'
+  - git commit -m"$BUILDREF ($TRAVIS_BUILD_NUMBER) commit https://github.com/okramlabs/okramlabs.github.src/commit/$TRAVIS_COMMIT"
+
+after_success:
   - git filter-branch --prune-empty --env-filter '
       GIT_COMMITTER_NAME="howi-bot";
       GIT_COMMITTER_EMAIL="howi@okramlabs.com";' --subdirectory-filter public master
