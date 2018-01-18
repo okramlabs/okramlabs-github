@@ -20,10 +20,11 @@ script:
   - rm $TRAVIS_BUILD_DIR/public/.gitkeep
   - cp $TRAVIS_BUILD_DIR/LICENSE-content $TRAVIS_BUILD_DIR/public/LICENSE
   - echo "<h1>okramlabs.github.io (will use hugo)</h1>" > $TRAVIS_BUILD_DIR/public/index.html
+  - echo "Automated deployment of [okramlabs/okramlabs.github.src](https://github.com/okramlabs/okramlabs.github.src) repository" > $TRAVIS_BUILD_DIR/public/readme.md
   # commit changes
   - git add -A
   - git status
-  - BUILDREF="$TRAVIS_TAG':bookmark:'"
+  - BUILDREF="$TRAVIS_TAG :bookmark:"
   - git commit -m"$BUILDREF ($TRAVIS_BUILD_NUMBER) deploy https://github.com/okramlabs/okramlabs.github.src/commit/$TRAVIS_COMMIT"
 
 after_success:
