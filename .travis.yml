@@ -16,8 +16,11 @@ before_install:
 script:
   - git checkout -b deploy-to-github $TRAVIS_COMMIT
   - vim -u NONE +'1d' +wq! $TRAVIS_BUILD_DIR/.gitignore
+  ## build
+  - rm $TRAVIS_BUILD_DIR/public/.gitkeep
   - cp $TRAVIS_BUILD_DIR/LICENSE-content $TRAVIS_BUILD_DIR/public/LICENSE
-  - echo "<h1>okramlabs.github.io</h1>" > $TRAVIS_BUILD_DIR/public/index.html
+  - echo "<h1>okramlabs.github.io (will use hugo)</h1>" > $TRAVIS_BUILD_DIR/public/index.html
+  # commit changes
   - git add -A
   - git status
   - BUILDREF="$TRAVIS_TAG':bookmark:'"
