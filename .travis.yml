@@ -2,14 +2,20 @@ sudo: false
 
 dist: trusty
 
+################################################################################
+# addons
 addons:
   apt:
     packages:
       - python-pygments
 
+################################################################################
+# notifications
 notifications:
   email: false
 
+################################################################################
+# cache
 cache:
   directories:
     - $HOME/build-cache
@@ -24,6 +30,8 @@ tmpl-test-deployment: &tmpl-test-deployment
   go: 1.9
   script: 'curl https://okramlabs.github.io'
 
+################################################################################
+# defaults
 before_install: skip
 install: skip
 before_script: skip
@@ -32,6 +40,8 @@ after_success: skip
 after_failure: skip
 after_script: skip
 
+################################################################################
+# stages
 stages:
   # verify pull request
   - name: verify pull request
@@ -58,6 +68,8 @@ stages:
   - name: create new release
     if: (tag IS present) AND (tag =~ ^v$) AND (repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request)
 
+################################################################################
+# jobs
 jobs:
   include:
     # test theme source
