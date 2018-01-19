@@ -66,6 +66,7 @@ stages:
     if: (type = push) AND (branch = master)
   # create new release (only on tags on upstream)
   # pull request should never build that stage
+  # only tags created from master of okramlabs/okramlabs.github.src
   - name: create new release
     if: (repo = okramlabs/okramlabs.github.src) AND (type NOT pull_request) AND (tag =~ ^v$)
 
