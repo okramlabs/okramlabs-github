@@ -33,6 +33,9 @@ after_failure: skip
 after_script: skip
 
 stages:
+  # verify pull request
+  - name: verify pull request
+    if: (type = pull_request) AND (branch = master)
   # test source
   - name: test src
     if: type IN (push, pull_request)
@@ -57,6 +60,12 @@ stages:
 
 jobs:
   include:
+    # test theme source
+    - stage: verify pull request
+      env: TASK=checks
+      language: go
+      go: 1.9
+      script: echo "verify pull request"
     # test theme source
     - stage: test src
       env: TASK=test-theme
