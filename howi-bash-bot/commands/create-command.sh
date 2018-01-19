@@ -41,8 +41,38 @@ $OL_HR \
   else
     hbot::logok "command: $cmdname $scmdname created!"
   fi
-  hbot::loginfo "consider add/update $cmdhelp in ./howi-bot"
+  hbot::loginfo "consider add/update $cmdhelp in ./howi-bash-bot/src/$cmdname.sh"
 
+}
+
+hbot::create_command::create_config() {
+  local cmdfilebase=$(basename  $1)
+  local cmdname=${cmdfilebase%.*}
+
+  if hbot::file_exists $1; then
+    logwarn "cannot create ($cmdname): config file - file exists!"
+    return
+  fi
+
+  local cmdhelp="hbot::${cmdname//-/_}::help"
+
+  # write to a file.
+  printf "%s \n%s \n%-16s%s \n%-16s%s \n%-16s%s \n%-16s%s \n%s \n\n%s\n%s\n%s\n" \
+"#!/bin/bash" \
+$OL_HR \
+"# command" ": $cmdname" \
+"# author" ": $OL_GIT_USER_NAME" \
+"# date" ": $OL_TODAY" \
+"# bash_version" ": ${BASH_VERSION}" \
+$OL_HR \
+"# add ($cmdname) shared methods and VARS here" \
+"# this file is source also by subcommands of ($cmdname)" \
+"$cmdhelp() { hbot::logwarn \"$cmdname help menu\"; }" > $1
+
+  hbot::logok "created config file for $cmdname"
+  echo $cmdhelp >> "$OL_ROOT/howi-bash-bot/help-menu.sh"
+  # echo "hbot::logbold "  TRAVIS COMMANDS"
+  # hbot::logline"
 }
 
 hbot::create_command::index() {
@@ -79,9 +109,16 @@ hbot::create_command::index() {
     hbot::loginfo "creating command $cmdname"
     if ! hbot::is_dir "$OL_PATH_CMDS/$cmdname"; then
       mkdir -p "$OL_PATH_CMDS/$cmdname"
+      mkdir -p "$OL_PATH_RES/$cmdname"
+      touch "$OL_PATH_RES/$cmdname/.gitkeep"
+
       if hbot::is_dir "$OL_PATH_CMDS/$cmdname"; then
-        hbot::logok "created directory for $cmdname"
+        hbot::logok "created command directory for $cmdname"
+        hbot::logok "created resources directory for $cmdname"
         hbot::create_command::create "$OL_PATH_CMDS/$cmdname/index.sh"
+      fi
+      if ! hbot::file_exists "$OL_PATH_SRC/$cmdname.sh"; then
+        hbot::create_command::create_config "$OL_PATH_SRC/$cmdname.sh"
       fi
     fi
   fi

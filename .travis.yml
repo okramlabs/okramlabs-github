@@ -53,6 +53,7 @@ cache:
 before_install: skip
 install: skip
 before_script: skip
+script: skip
 after_success: skip
 after_failure: skip
 after_script: skip
