@@ -85,7 +85,7 @@ stages:
   # test okramlabs.github.io deployment
   - name: test okramlabs.github.io deployment
     if: (type IS push) AND (branch IS master)
-  # create new release
+  # create new release (only on tags on upstream)
   - name: create new release
     if: (tag IS present) AND (tag =~ ^v$) AND (repo IS okramlabs/okramlabs.github.src) AND (NOT type IS pull_request)
 
@@ -151,5 +151,4 @@ jobs:
         skip_cleanup: true
         provider: script
         script: echo "deploy release to github"
-
       after_deploy: echo "after_deploy okramlabs.github.io"
