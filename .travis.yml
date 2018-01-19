@@ -54,7 +54,6 @@ cache:
 # Templates
 tmpl-test-deployment: &tmpl-test-deployment
   stage: test okramlabs.github.io deployment
-  env: TASK=test-site
   language: go
   go: 1.9
   script: 'curl https://okramlabs.github.io'
@@ -68,61 +67,63 @@ after_failure: skip
 after_script: skip
 
 stages:
+  # test source
   - name: test src
     if: type IN (push, pull_request)
-
-  - name: prepare cache
-
+  # prepare build lifecycle
+  - name: prepare cache and the build lifecycle
+  # build theme
   - name: build theme
-    if: type IS push AND branch = master
-
+    if: (type = push) AND (branch = master)
+  # build site
   - name: build site
-    if: type IS push AND branch = master
-
-  - name: generate assets
-    if: type IS push AND branch = master
-
+    if: (type = push) AND (branch = master)
+  # generate assets and additional content
+  - name: generate assets and additional content
+    if: (type = push) AND (branch = master)
+  # deploy okramlabs.github.io
   - name: deploy okramlabs.github.io
-    if: type IS push AND branch = master
-
+    if: (type = push) AND (branch = master)
+  # test okramlabs.github.io deployment
   - name: test okramlabs.github.io deployment
-    if: type IS push AND branch = master
-
-  - name: upload github release
-    if: type IS push AND tag IS present AND tag =~ ^v1 AND repo IS okramlabs/okramlabs.github.src
+    if: (type = push) AND (branch = master)
+  # create new release
+  - name: create new release
+    if: (type = push) AND (tag IS present) AND (tag =~ ^v1) AND (repo = okramlabs/okramlabs.github.src)
 
 jobs:
   include:
     - stage: test src
+      # test theme source
       env: TASK=test-theme
       language: node_js
       node_js: node
       script: echo "running tests" | tee > ~/build-cache/one
-
+      # test site source
     - env: TASK=test-site
       language: go
       go: 1.9
       script: echo "running test site" | tee > ~/build-cache/test-site
-
-    - stage: prepare cache
+      # prepare build lifecycle
+    - stage: prepare cache and the build lifecycle
       language: go
       go: 1.9
-
+      # build a fresh theme
     - stage: build theme
       language: node_js
       node_js: node
       script: echo "running build theme" | tee > ~/build-cache/build-theme
-
+      # build new site with theme built on previous step
     - stage: build site
       language: go
       go: 1.9
       script: echo "running build site" | tee > ~/build-cache/build-site
-
-    - stage: generate assets
+      # generaate content and assets
+    - stage: generate assets and additional content
       language: go
       go: 1.9
       script: echo "running generate assets" | tee > ~/build-cache/generate-assets
-
+      # deploy to deploy okramlabs.github.io master
     - stage: deploy okramlabs.github.io
       language: go
       go: 1.9
@@ -136,17 +137,20 @@ jobs:
           branch: master
       after_deploy: echo "after_deploy okramlabs.github.io"
 
+    # test this deployment
     - <<: *tmpl-test-deployment
-      env: TASK=test-site-2
+      env: TASK=test-site-1
+      script: echo "Testing deployment 1 ..."
+
+    - <<: *tmpl-test-deployment
       script: echo "Testing deployment 2 ..."
+      env: TASK=test-site-2
 
-    - <<: *tmpl-test-deployment
-      script: echo "Testing deployment  3 ..."
-      env: TASK=test-site-3
-
-    - stage: upload github release
+    # if this is a release run additional tasks
+    - stage: create new release
       language: go
       go: 1.9
+      env: TASK=upload-github-release
       deploy:
         provider: releases
         api_key: "$GITHUB_OAUTH_TOKEN"
