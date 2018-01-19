@@ -65,6 +65,7 @@ stages:
   - name: test okramlabs.github.io deployment
     if: (type = push) AND (branch = master)
   # create new release (only on tags on upstream)
+  # pull request should never build that stage
   - name: create new release
     if: (repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (tag =~ ^v$)
 
