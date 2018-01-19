@@ -71,6 +71,8 @@ stages:
   # there is validation issue with stages
   - name: create new release
     if: (repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (branch = master) AND (tag =~ ^v)
+    on:
+      tags: true
 
 ################################################################################
 # jobs
