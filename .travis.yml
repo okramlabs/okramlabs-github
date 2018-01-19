@@ -70,16 +70,14 @@ stages:
   # test source
   - name: test src
     if: type IN (push, pull_request)
-  # prepare build lifecycle
-  - name: prepare cache and the build lifecycle
+  # generate assets and additional content
+  - name: generate assets and additional content
+    if: (type = push) AND (branch = master)
   # build theme
   - name: build theme
     if: (type = push) AND (branch = master)
   # build site
   - name: build site
-    if: (type = push) AND (branch = master)
-  # generate assets and additional content
-  - name: generate assets and additional content
     if: (type = push) AND (branch = master)
   # deploy okramlabs.github.io
   - name: deploy okramlabs.github.io
@@ -104,10 +102,11 @@ jobs:
       language: go
       go: 1.9
       script: echo "running test site" | tee > ~/build-cache/test-site
-      # prepare build lifecycle
-    - stage: prepare cache and the build lifecycle
+      # generaate content and assets
+    - stage: generate assets and additional content
       language: go
       go: 1.9
+      script: echo "running generate assets" | tee > ~/build-cache/generate-assets
       # build a fresh theme
     - stage: build theme
       language: node_js
@@ -118,11 +117,6 @@ jobs:
       language: go
       go: 1.9
       script: echo "running build site" | tee > ~/build-cache/build-site
-      # generaate content and assets
-    - stage: generate assets and additional content
-      language: go
-      go: 1.9
-      script: echo "running generate assets" | tee > ~/build-cache/generate-assets
       # deploy to deploy okramlabs.github.io master
     - stage: deploy okramlabs.github.io
       language: go
