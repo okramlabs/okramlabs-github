@@ -22,7 +22,12 @@ after_failure: ./howi-bot --as-howi-bot travis-ci after_failure
 
 before_deploy: ./howi-bot --as-howi-bot travis-ci before_deploy
 
-deploy: ./howi-bot --as-howi-bot travis-ci deploy
+deploy:
+  provider: script
+  script: ./howi-bot --as-howi-bot travis-ci deploy
+  on:
+    tags: true
+    branch: master
 
 after_deploy: ./howi-bot --as-howi-bot travis-ci after_deploy
 
