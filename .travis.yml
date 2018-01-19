@@ -145,7 +145,7 @@ jobs:
       env: TASK=upload-github-release
       language: go
       go: 1.9
-      script: echo "create new release ..."
+      script: echo "create new release for github ..."
       before_deploy: echo "before_deploy okramlabs.github.io"
       deploy:
         skip_cleanup: true
