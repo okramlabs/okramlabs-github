@@ -1,44 +1,29 @@
 os:
   - linux
 
-before_install:
-  - |
-    declare -r SSH_FILE="$(mktemp -u $HOME/.ssh/XXXXX)"
-    openssl aes-256-cbc -K $encrypted_86dc7fa5806f_key -iv $encrypted_86dc7fa5806f_iv -in .ci/deploy_key.enc -out "$SSH_FILE" -d
-    chmod 600 "$SSH_FILE" \
-      && printf "%s\n" \
-        "Host github.com" \
-        "  IdentityFile $SSH_FILE" \
-        "  LogLevel ERROR" >> ~/.ssh/config
-  - git config --global user.email "howi@okramlabs.com"
-  - git config --global user.name "howi-bot"
-
-script:
-  - git checkout -b deploy-to-github $TRAVIS_COMMIT
-  - vim -u NONE +'1d' +wq! $TRAVIS_BUILD_DIR/.gitignore
-  ## build
-  - rm $TRAVIS_BUILD_DIR/public/.gitkeep
-  - cp $TRAVIS_BUILD_DIR/LICENSE-content $TRAVIS_BUILD_DIR/public/LICENSE
-  - echo "<h1>okramlabs.github.io (will use hugo)</h1>" > $TRAVIS_BUILD_DIR/public/index.html
-  - echo "Automated deployment of [okramlabs/okramlabs.github.src](https://github.com/okramlabs/okramlabs.github.src) repository" > $TRAVIS_BUILD_DIR/public/readme.md
-  # commit changes
-  - git add -A
-  - git status
-  - BUILDREF="$TRAVIS_TAG :bookmark:"
-  - git commit -m"$BUILDREF ($TRAVIS_BUILD_NUMBER) deploy https://github.com/okramlabs/okramlabs.github.src/commit/$TRAVIS_COMMIT"
-
-after_success:
-  # deploy
-  - git checkout deploy-to-github
-  - git filter-branch --prune-empty --env-filter '
-      GIT_COMMITTER_NAME="howi-bot";
-      GIT_COMMITTER_EMAIL="howi@okramlabs.com";' --subdirectory-filter public deploy-to-github
-  - git remote add ghpage git@github.com:okramlabs/okramlabs.github.io.git
-  - git push -f ghpage deploy-to-github:master
-
 branches:
   only:
   - master
 
 notifications:
   email: false
+
+before_install: ./howi-bot --as-howi-bot travis-ci before_install
+
+install: ./howi-bot --as-howi-bot travis-ci install
+
+before_script: ./howi-bot --as-howi-bot travis-ci before_script
+
+script: ./howi-bot --as-howi-bot travis-ci before_script
+
+after_success: ./howi-bot --as-howi-bot travis-ci after_success
+
+after_failure: ./howi-bot --as-howi-bot travis-ci after_failure
+
+before_deploy: ./howi-bot --as-howi-bot travis-ci before_deploy
+
+deploy: ./howi-bot --as-howi-bot travis-ci deploy
+
+after_deploy: ./howi-bot --as-howi-bot travis-ci after_deploy
+
+after_script: ./howi-bot --as-howi-bot travis-ci after_script

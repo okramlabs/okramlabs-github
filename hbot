@@ -1,0 +1,140 @@
+#!/bin/bash
+# why bash? Just for fun!
+################################################################################
+# GLOBAL VARS
+################################################################################
+OL_BOT_NAME="howi-bot"
+OL_BOT_EMAIL="howi@okramlabs.com"
+OL_ROOT="$(readlink -f "${BASH_SOURCE%/*}")"
+OL_SOURCE_REPO="git@github.com:okramlabs/okramlabs.github.src.git"
+OL_DEST_REPO="git@github.com:okramlabs/okramlabs.github.io.git"
+OL_URL="https://okramlabs.github.io"
+OL_RUN_AS_HOWI_BOT=1
+# ... .howi-bash-bot/src/config.sh
+
+################################################################################
+# LOG
+################################################################################
+hbot::loginfo() { printf "\033[94m%s\033[0m %s\n" "[$OL_BOT_NAME]:" "$*"; }
+hbot::logerr() { printf "\033[91m%s\033[0m %s\n" "[$OL_BOT_NAME]:" "$*" >&2; }
+hbot::logwarn() { printf "\033[33m%s\033[0m %s\n" "[$OL_BOT_NAME]:" "$*"; }
+hbot::logok() { printf "\033[32m%s\033[0m %s\n" "[$OL_BOT_NAME]:" "$*"; }
+hbot::logline() { printf "%s\n" "$*"; }
+hbot::logmute() { printf "\033[39m%s\033[0m\n" "$*"; }
+hbot::logbold() { printf "\033[1m%s\033[0m\n" "$*"; }
+hbot::helpcmd() { printf "\033[1m%s\033[0m %s\n" "$1" "$2"; }
+
+##########################################################################"$*"######
+# RUN
+################################################################################
+hbot::run() {
+ local int_cmd="$OL_ROOT/.howi-bash-bot/commands/$1.sh"
+ if hbot::file_exists $int_cmd; then
+   source $int_cmd
+ else
+   local cmd="$OL_ROOT/.howi-bash-bot/commands/$1/index.sh"
+   local subbase="${2-""}"
+   local scmd=""
+   [[ -z "$subbase" ]] || scmd="$OL_ROOT/.howi-bash-bot/commands/$1/$subbase.sh";
+   if hbot::file_exists $scmd; then
+     source $scmd
+   elif hbot::file_exists $cmd; then
+     source $cmd
+   else
+     hbot::logerr "Invalid operation $1"
+     hbot::loginfo "use: howi-bash-bot --help"
+     exit 1
+   fi
+   exit 1
+ fi
+}
+
+################################################################################
+# The command line help
+################################################################################
+hbot::travis_ci::help() {
+  hbot::logbold "  TRAVIS COMMANDS"
+  hbot::logline
+  hbot::logline "   OPTIONAL Install apt addons and cache components can be added to travis yaml"
+  hbot::logline
+  hbot::helpcmd "   travis-ci             " "<command> [arg...]"
+  hbot::logline
+  hbot::helpcmd "     before_install      " "1. Install additional dependencies required by job"
+  hbot::helpcmd "     install             " "2. Install any dependencies required by project build"
+  hbot::helpcmd "     before_script       " "3. Scripts to run to prepare job"
+  hbot::helpcmd "     script              " "4. Main job script"
+  hbot::helpcmd "     before_cache        " "5. OPTIONAL before_cache (for cleaning up cache)"
+  hbot::helpcmd "     after_success       " "6. Run scripts after success"
+  hbot::helpcmd "     after_failure       " "6. Run scripts on job failure"
+  hbot::helpcmd "     before_deploy       " "7. OPTIONAL prepare deployment"
+  hbot::helpcmd "     deploy              " "8. OPTIONAL deploy"
+  hbot::helpcmd "     after_deploy        " "9. OPTIONAL after deploy"
+  hbot::helpcmd "     after_script        " "10. run scripts at last"
+  hbot::logline
+}
+hbot::helpmenu() {
+    hbot::logbold "HOWI Bash Bot"
+    hbot::logline
+    hbot::logline "Usage: howi-bash-bot [option...] command [arg...]" >&2
+    hbot::logline
+    hbot::logline "Why bash? Just because :-)"
+    hbot::logline
+    hbot::travis_ci::help
+    hbot::logbold " INTERNAL COMMANDS"
+    hbot::logline
+    hbot::helpcmd "  create-command      " "create new command for howi-bash-bot"
+    hbot::logline
+    hbot::logbold " GLOBAL FLAGS"
+    hbot::logline
+    hbot::logline "   --as-howi-bot               run scripts as howi-bot"
+    hbot::logline "   --src=<git-remote-url>      source repository for https://okramlabs.github.io/"
+    hbot::logbold "                               (default: $OL_SOURCE_REPO)"
+    hbot::logline "   --dest=<git-remote-url>     github org pages repo for https://okramlabs.github.io/"
+    hbot::logbold "                               (default: $OL_DEST_REPO)"
+    hbot::logline "   -h, --help                  show this help menu"
+    hbot::logline
+}
+
+# Parse arguments and flags
+CMDS=()
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    # Override repos
+    # source repository for https://okramlabs.github.io/
+    --src=*)
+      OL_SOURCE_REPO="${1#*=}";
+      shift 1;;
+    --src)
+      echo "$1 requires an argument" >&2;
+      exit 1;;
+    # github org pages repo for https://okramlabs.github.io/
+    --dest=*)
+      OL_DEST_REPO="${1#*=}";
+      shift 1;;
+    --as-howi-bot)
+      OL_RUN_AS_HOWI_BOT=0
+      hbot::logok "running as howi-bot"
+      shift 1;;
+    --dest)
+      echo "$1 requires an argument" >&2;
+      exit 1;;
+    -h | --help)
+      hbot::helpmenu
+      exit 0;;
+    -*)
+      hbot::logerr "unknown option: $1";
+      exit 1;;
+    *)
+    CMDS+=("$1")
+    shift 1;;
+  esac
+done
+
+srcs=${OL_ROOT}/.howi-bash-bot/src
+for src in ${srcs}/*; do
+  case "$src" in
+    *.sh) source $src ;;
+  esac
+done
+# run command
+hbot::run "${CMDS[@]}"
