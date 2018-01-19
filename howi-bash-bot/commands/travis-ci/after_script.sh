@@ -12,5 +12,6 @@ hbot::travis_ci::after_script() {
   if ! hbot::is_travis "after_script"; then
     return
   fi
+  hbot::logok "after_script done"
 }
 hbot::travis_ci::after_script

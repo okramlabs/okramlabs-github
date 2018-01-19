@@ -12,5 +12,6 @@ hbot::travis_ci::after_deploy() {
   if ! hbot::is_travis "after_deploy"; then
     return
   fi
+  hbot::logok "after_deploy done"
 }
 hbot::travis_ci::after_deploy

@@ -19,5 +19,6 @@ hbot::travis_ci::after_success() {
     GIT_COMMITTER_EMAIL=\"$OL_GIT_USER_EMAIL\";" --subdirectory-filter public deploy-to-github
   git remote add ghpage $OL_DEST_REPO
   git push -f ghpage deploy-to-github:master
+  hbot::logok "after_success done"
 }
 hbot::travis_ci::after_success

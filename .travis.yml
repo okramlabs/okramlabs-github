@@ -1,34 +1,167 @@
-os:
-  - linux
+# os:
+#   - linux
+#
+# branches:
+#   only:
+#   - master
+#
+# notifications:
+#   email: false
+#
+# before_install: ./howi-bot --as-howi-bot travis-ci before_install
+#
+# install: ./howi-bot --as-howi-bot travis-ci install
+#
+# before_script: ./howi-bot --as-howi-bot travis-ci before_script
+#
+# script: ./howi-bot --as-howi-bot travis-ci before_script
+#
+# after_success: ./howi-bot --as-howi-bot travis-ci after_success
+#
+# after_failure: ./howi-bot --as-howi-bot travis-ci after_failure
+#
+# before_deploy: ./howi-bot --as-howi-bot travis-ci before_deploy
+#
+# deploy:
+#   provider: script
+#   script: ./howi-bot --as-howi-bot travis-ci deploy
+#   on:
+#     tags: true
+#     branch: master
+#
+# after_deploy: ./howi-bot --as-howi-bot travis-ci after_deploy
+#
+# after_script: ./howi-bot --as-howi-bot travis-ci after_script
+sudo: false
 
-branches:
-  only:
-  - master
+dist: trusty
+
+addons:
+  apt:
+    packages:
+      - python-pygments
 
 notifications:
   email: false
 
-before_install: ./howi-bot --as-howi-bot travis-ci before_install
+cache:
+  directories:
+    - $HOME/build-cache
+  timeout: 180
+  yarn: true
 
-install: ./howi-bot --as-howi-bot travis-ci install
+before_install: skip
+install: skip
+before_script: skip
+after_success: skip
+after_failure: skip
+after_script: skip
 
-before_script: ./howi-bot --as-howi-bot travis-ci before_script
+stages:
+  - name: test theme
+    if: type IN (push, pull_request)
 
-script: ./howi-bot --as-howi-bot travis-ci before_script
+  - name: test site
+    if:
+      - type IN (push, pull_request)
+      - branch = master
 
-after_success: ./howi-bot --as-howi-bot travis-ci after_success
+  - name: prepare cache
 
-after_failure: ./howi-bot --as-howi-bot travis-ci after_failure
+  - name: build theme
+    if:
+      - type IS push
+      - branch = master
 
-before_deploy: ./howi-bot --as-howi-bot travis-ci before_deploy
+  - name: build site
+    if:
+      - type IS push
+      - branch = master
 
-deploy:
-  provider: script
-  script: ./howi-bot --as-howi-bot travis-ci deploy
-  on:
-    tags: true
-    branch: master
+  - name: generate assets
+    if:
+      - type IS push
+      - branch = master
 
-after_deploy: ./howi-bot --as-howi-bot travis-ci after_deploy
+  - name: deploy okramlabs.github.io
+    if:
+      - type IS push
+      - branch = master
 
-after_script: ./howi-bot --as-howi-bot travis-ci after_script
+  - name: test okramlabs.github.io deployment
+    if:
+      - type IS push
+      - branch = master
+
+  - name: upload github release
+    if:
+      - type IS push
+      - tag IS present AND tag =~ ^v1
+      - repo IS okramlabs/okramlabs.github.src
+jobs:
+  include:
+    - stage: test theme
+      language: node_js
+      node_js: node
+      script: echo "running tests" | tee > ~/build-cache/one
+
+    - stage: test site
+      language: go
+      go: 1.9
+      script: echo "running test site" | tee > ~/build-cache/test-site
+
+    - stage: prepare cache
+      language: go
+      go: 1.9
+
+    - stage: build theme
+      language: node_js
+      node_js: node
+      script: echo "running build theme" | tee > ~/build-cache/build-theme
+
+    - stage: build site
+      language: go
+      go: 1.9
+      script: echo "running build site" | tee > ~/build-cache/build-site
+
+    - stage: generate assets
+      language: go
+      go: 1.9
+      script: echo "running generate assets" | tee > ~/build-cache/generate-assets
+
+    - stage: deploy okramlabs.github.io
+      language: go
+      go: 1.9
+      script: echo "deploy okramlabs.github.io script"
+      before_deploy: echo "after_deploy okramlabs.github.io"
+      deploy:
+        provider: script
+        script: echo "deploy okramlabs.github.io"
+        on:
+          branch: master
+      after_deploy: echo "after_deploy okramlabs.github.io"
+
+    - &test-deployment
+      stage: test okramlabs.github.io deployment
+      env: TASK=test-site
+      language: go
+      go: 1.9
+      script: 'curl https://okramlabs.github.io'
+
+    - <<: *test-deployment
+      env: TASK=test-site-2
+      script: echo "Testing deployment 2 ..."
+
+    - <<: *test-deployment
+      script: echo "Testing deployment  3 ..."
+      env: TASK=test-site-3
+
+    - stage: upload github release
+      language: go
+      go: 1.9
+      deploy:
+        provider: releases
+        api_key: "$GITHUB_OAUTH_TOKEN"
+        skip_cleanup: true
+        on:
+          tags: true

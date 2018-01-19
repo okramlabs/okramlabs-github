@@ -10,7 +10,7 @@ OL_SOURCE_REPO="git@github.com:okramlabs/okramlabs.github.src.git"
 OL_DEST_REPO="git@github.com:okramlabs/okramlabs.github.io.git"
 OL_URL="https://okramlabs.github.io"
 OL_RUN_AS_HOWI_BOT=1
-# ... .howi-bash-bot/src/config.sh
+# ... howi-bash-bot/src/config.sh
 
 ################################################################################
 # LOG
@@ -28,14 +28,14 @@ hbot::helpcmd() { printf "\033[1m%s\033[0m %s\n" "$1" "$2"; }
 # RUN
 ################################################################################
 hbot::run() {
- local int_cmd="$OL_ROOT/.howi-bash-bot/commands/$1.sh"
+ local int_cmd="$OL_ROOT/howi-bash-bot/commands/$1.sh"
  if hbot::file_exists $int_cmd; then
    source $int_cmd
  else
-   local cmd="$OL_ROOT/.howi-bash-bot/commands/$1/index.sh"
+   local cmd="$OL_ROOT/howi-bash-bot/commands/$1/index.sh"
    local subbase="${2-""}"
    local scmd=""
-   [[ -z "$subbase" ]] || scmd="$OL_ROOT/.howi-bash-bot/commands/$1/$subbase.sh";
+   [[ -z "$subbase" ]] || scmd="$OL_ROOT/howi-bash-bot/commands/$1/$subbase.sh";
    if hbot::file_exists $scmd; then
      source $scmd
    elif hbot::file_exists $cmd; then
@@ -130,7 +130,7 @@ while [ "$#" -gt 0 ]; do
   esac
 done
 
-srcs=${OL_ROOT}/.howi-bash-bot/src
+srcs=${OL_ROOT}/howi-bash-bot/src
 for src in ${srcs}/*; do
   case "$src" in
     *.sh) source $src ;;

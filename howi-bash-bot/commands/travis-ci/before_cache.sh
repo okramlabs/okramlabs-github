@@ -12,5 +12,6 @@ hbot::travis_ci::before_cache() {
   if ! hbot::is_travis "before_cache"; then
     return
   fi
+  hbot::logok "before_cache done"
 }
 hbot::travis_ci::before_cache
