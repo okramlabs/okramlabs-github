@@ -66,7 +66,7 @@ stages:
     if: (type = push) AND (branch = master)
   # create new release (only on tags on upstream)
   - name: create new release
-    if: (tag IS present) AND (tag =~ ^v$) AND (repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request)
+    if: (repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (tag =~ ^v$)
 
 ################################################################################
 # jobs
