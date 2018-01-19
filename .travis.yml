@@ -87,37 +87,37 @@ stages:
     if: (type = push) AND (branch = master)
   # create new release
   - name: create new release
-    if: (type = push) AND (tag IS present) AND (tag =~ ^v1) AND (repo = okramlabs/okramlabs.github.src)
+    if: (type = push) AND (tag IS present) AND (tag =~ ^v$)
 
 jobs:
   include:
+    # test theme source
     - stage: test src
-      # test theme source
       env: TASK=test-theme
       language: node_js
       node_js: node
       script: echo "running tests" | tee > ~/build-cache/one
-      # test site source
+    # test site source
     - env: TASK=test-site
       language: go
       go: 1.9
       script: echo "running test site" | tee > ~/build-cache/test-site
-      # generaate content and assets
+    # generaate content and assets
     - stage: generate assets and additional content
       language: go
       go: 1.9
       script: echo "running generate assets" | tee > ~/build-cache/generate-assets
-      # build a fresh theme
+    # build a fresh theme
     - stage: build theme
       language: node_js
       node_js: node
       script: echo "running build theme" | tee > ~/build-cache/build-theme
-      # build new site with theme built on previous step
+    # build new site with theme built on previous step
     - stage: build site
       language: go
       go: 1.9
       script: echo "running build site" | tee > ~/build-cache/build-site
-      # deploy to deploy okramlabs.github.io master
+    # deploy to deploy okramlabs.github.io master
     - stage: deploy okramlabs.github.io
       language: go
       go: 1.9
