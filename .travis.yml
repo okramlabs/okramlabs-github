@@ -68,6 +68,7 @@ stages:
   # pull request should never build that stage
   # only tags created from master of okramlabs/okramlabs.github.src
   # may need to explicitly set that in jobs under that stage
+  # there is validation issue with stages
   - name: create new release
     if: (repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (branch = master)
 
