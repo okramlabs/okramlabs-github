@@ -70,9 +70,7 @@ stages:
   # may need to explicitly set that in jobs under that stage
   # there is validation issue with stages
   - name: create new release
-    if: (repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (branch = master) AND (tag =~ ^v)
-    on:
-      tags: true
+    if: (repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (branch = master) AND (tag IS present)
 
 ################################################################################
 # jobs
