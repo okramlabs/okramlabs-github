@@ -69,7 +69,7 @@ stages:
   # only tags created from master of okramlabs/okramlabs.github.src
   # may need to explicitly set that in jobs under that stage
   - name: create new release
-    if: (repo = okramlabs/okramlabs.github.src) AND (type != pull_request) AND (tag =~ ^v$)
+    if: (repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (branch = master)
 
 ################################################################################
 # jobs
