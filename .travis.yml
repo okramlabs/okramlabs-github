@@ -63,42 +63,28 @@ stages:
     if: type IN (push, pull_request)
 
   - name: test site
-    if:
-      - type IN (push, pull_request)
-      - branch = master
+    if: type IN (push, pull_request)
 
   - name: prepare cache
 
   - name: build theme
-    if:
-      - type IS push
-      - branch = master
+    if: type IS push AND branch = master
 
   - name: build site
-    if:
-      - type IS push
-      - branch = master
+    if: type IS push AND branch = master
 
   - name: generate assets
-    if:
-      - type IS push
-      - branch = master
+    if: type IS push AND branch = master
 
   - name: deploy okramlabs.github.io
-    if:
-      - type IS push
-      - branch = master
+    if: type IS push AND branch = master
 
   - name: test okramlabs.github.io deployment
-    if:
-      - type IS push
-      - branch = master
+    if: type IS push AND branch = master
 
   - name: upload github release
-    if:
-      - type IS push
-      - tag IS present AND tag =~ ^v1
-      - repo IS okramlabs/okramlabs.github.src
+    if: type IS push AND tag IS present AND tag =~ ^v1 AND repo IS okramlabs/okramlabs.github.src
+
 jobs:
   include:
     - stage: test theme
@@ -136,6 +122,7 @@ jobs:
       script: echo "deploy okramlabs.github.io script"
       before_deploy: echo "after_deploy okramlabs.github.io"
       deploy:
+        skip_cleanup: true
         provider: script
         script: echo "deploy okramlabs.github.io"
         on:
