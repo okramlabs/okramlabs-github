@@ -72,22 +72,22 @@ stages:
     if: type IN (push, pull_request)
   # generate assets and additional content
   - name: generate assets and additional content
-    if: (type IS push) AND (branch IS master)
+    if: (type = push) AND (branch = master)
   # build theme
   - name: build theme
-    if: (type IS push) AND (branch IS master)
+    if: (type = push) AND (branch = master)
   # build site
   - name: build site
-    if: (type IS push) AND (branch IS master)
+    if: (type = push) AND (branch = master)
   # deploy okramlabs.github.io
   - name: deploy okramlabs.github.io
-    if: (type IS push) AND (branch IS master)
+    if: (type = push) AND (branch = master)
   # test okramlabs.github.io deployment
   - name: test okramlabs.github.io deployment
-    if: (type IS push) AND (branch IS master)
-  # create new release
+    if: (type = push) AND (branch = master)
+  # create new release (only on tags on upstream)
   - name: create new release
-    if: (tag IS present) AND (tag =~ ^v$) AND (repo IS okramlabs/okramlabs.github.src) AND (NOT type IS pull_request)
+    if: (tag IS present) AND (tag =~ ^v$) AND (repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request)
 
 jobs:
   include:
@@ -151,5 +151,4 @@ jobs:
         skip_cleanup: true
         provider: script
         script: echo "deploy release to github"
-
       after_deploy: echo "after_deploy okramlabs.github.io"
