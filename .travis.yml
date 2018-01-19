@@ -86,7 +86,7 @@ stages:
   - name: test okramlabs.github.io deployment
     if: (type = push) AND (branch = master)
   # create new release
-  - name: create new release
+  - name: publish it
     if: (type = push) AND (tag IS present) AND (tag =~ ^v1) AND (repo = okramlabs/okramlabs.github.src)
 
 jobs:
@@ -141,7 +141,7 @@ jobs:
       env: TASK=test-site-2
 
     # if this is a release run additional tasks
-    - stage: create new release
+    - stage: publish it
       language: go
       go: 1.9
       env: TASK=upload-github-release
