@@ -1,4 +1,6 @@
 #!/bin/bash
+NEW_CMD_DESCRIPTION=""
+
 hbot::create_command::create() {
   local cmddir=$(dirname  $1)
   local cmdname=$(basename  $cmddir)
@@ -20,15 +22,14 @@ hbot::create_command::create() {
   local cmdhelp="hbot::${cmdname//-/_}::help"
 
   printf "Enter a command description: "
-  read -r description
-
+  read -r NEW_CMD_DESCRIPTION
   # write to a file.
   printf "%s \n%s \n%-16s%s \n%-16s%s \n%-16s%s \n%-16s%s \n%-16s%s \n%-16s%s \n%s \n\n%s\n%s\n" \
 "#!/bin/bash" \
 $OL_HR \
 "# command" ": $cmdname" \
 "# sub command" ": $scmdname" \
-"# description" ": $description" \
+"# description" ": $NEW_CMD_DESCRIPTION" \
 "# author" ": $OL_GIT_USER_NAME" \
 "# date" ": $OL_TODAY" \
 "# bash_version" ": ${BASH_VERSION}" \
@@ -57,7 +58,7 @@ hbot::create_command::create_config() {
   local cmdhelp="hbot::${cmdname//-/_}::help"
 
   # write to a file.
-  printf "%s \n%s \n%-16s%s \n%-16s%s \n%-16s%s \n%-16s%s \n%s \n\n%s\n%s\n%s\n" \
+  printf "%s \n%s \n%-16s%s \n%-16s%s \n%-16s%s \n%-16s%s \n%s \n\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n" \
 "#!/bin/bash" \
 $OL_HR \
 "# command" ": $cmdname" \
@@ -67,12 +68,17 @@ $OL_HR \
 $OL_HR \
 "# add ($cmdname) shared methods and VARS here" \
 "# this file is source also by subcommands of ($cmdname)" \
-"$cmdhelp() { hbot::logwarn \"$cmdname help menu\"; }" > $1
+"$cmdhelp() {" \
+"  hbot::logbold \" ${cmdname^^} COMMANDS\"" \
+"  hbot::logline" \
+"  hbot::logline \"    $NEW_CMD_DESCRIPTION\"" \
+"  hbot::logline" \
+"  hbot::helpcmd \"   $cmdname  \" \"<command> [arg...]\"" \
+"  hbot::logline" \
+"}" > $1
 
   hbot::logok "created config file for $cmdname"
   echo $cmdhelp >> "$OL_ROOT/howi-bash-bot/help-menu.sh"
-  # echo "hbot::logbold "  TRAVIS COMMANDS"
-  # hbot::logline"
 }
 
 hbot::create_command::index() {

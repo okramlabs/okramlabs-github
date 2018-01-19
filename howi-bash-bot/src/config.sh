@@ -19,12 +19,10 @@ else
 fi
 
 if [ $OL_RUN_AS_HOWI_BOT -eq 0 ]; then
-  hbot::loginfo "bot configuration"
   OL_GIT_USER_NAME=$OL_BOT_NAME
   OL_GIT_USER_EMAIL=$OL_BOT_EMAIL
   return
 else
-  hbot::loginfo "user configuration"
   OL_GIT_USER_NAME=$(git config --global user.name)
   OL_GIT_USER_EMAIL=$(git config --global user.email)
 fi

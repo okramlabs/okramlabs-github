@@ -52,26 +52,26 @@ hbot::run() {
 ################################################################################
 # The command line help
 ################################################################################
-hbot::travis_ci::help() {
-  hbot::logbold "  TRAVIS COMMANDS"
-  hbot::logline
-  hbot::logline "   OPTIONAL Install apt addons and cache components can be added to travis yaml"
-  hbot::logline
-  hbot::helpcmd "   travis-ci             " "<command> [arg...]"
-  hbot::logline
-  hbot::helpcmd "     before_install      " "1. Install additional dependencies required by job"
-  hbot::helpcmd "     install             " "2. Install any dependencies required by project build"
-  hbot::helpcmd "     before_script       " "3. Scripts to run to prepare job"
-  hbot::helpcmd "     script              " "4. Main job script"
-  hbot::helpcmd "     before_cache        " "5. OPTIONAL before_cache (for cleaning up cache)"
-  hbot::helpcmd "     after_success       " "6. Run scripts after success"
-  hbot::helpcmd "     after_failure       " "6. Run scripts on job failure"
-  hbot::helpcmd "     before_deploy       " "7. OPTIONAL prepare deployment"
-  hbot::helpcmd "     deploy              " "8. OPTIONAL deploy"
-  hbot::helpcmd "     after_deploy        " "9. OPTIONAL after deploy"
-  hbot::helpcmd "     after_script        " "10. run scripts at last"
-  hbot::logline
-}
+# hbot::travis_ci::help() {
+#   hbot::logbold "  TRAVIS COMMANDS"
+#   hbot::logline
+#   hbot::logline "    OPTIONAL Install apt addons and cache components can be added to travis yaml"
+#   hbot::logline
+#   hbot::helpcmd "   travis-ci             " "<command> [arg...]"
+#   hbot::logline
+#   hbot::helpcmd "     before_install      " "1. Install additional dependencies required by job"
+#   hbot::helpcmd "     install             " "2. Install any dependencies required by project build"
+#   hbot::helpcmd "     before_script       " "3. Scripts to run to prepare job"
+#   hbot::helpcmd "     script              " "4. Main job script"
+#   hbot::helpcmd "     before_cache        " "5. OPTIONAL before_cache (for cleaning up cache)"
+#   hbot::helpcmd "     after_success       " "6. Run scripts after success"
+#   hbot::helpcmd "     after_failure       " "6. Run scripts on job failure"
+#   hbot::helpcmd "     before_deploy       " "7. OPTIONAL prepare deployment"
+#   hbot::helpcmd "     deploy              " "8. OPTIONAL deploy"
+#   hbot::helpcmd "     after_deploy        " "9. OPTIONAL after deploy"
+#   hbot::helpcmd "     after_script        " "10. run scripts at last"
+#   hbot::logline
+# }
 hbot::helpmenu() {
     hbot::logbold "HOWI Bash Bot"
     hbot::logline
@@ -79,7 +79,9 @@ hbot::helpmenu() {
     hbot::logline
     hbot::logline "Why bash? Just because :-)"
     hbot::logline
-    hbot::travis_ci::help
+
+    source "$OL_ROOT/howi-bash-bot/help-menu.sh"
+
     hbot::logbold " INTERNAL COMMANDS"
     hbot::logline
     hbot::helpcmd "  create-command      " "create new command for howi-bash-bot"
@@ -94,6 +96,13 @@ hbot::helpmenu() {
     hbot::logline "   -h, --help                  show this help menu"
     hbot::logline
 }
+
+srcs=${OL_ROOT}/howi-bash-bot/src
+for src in ${srcs}/*; do
+  case "$src" in
+    *.sh) source $src ;;
+  esac
+done
 
 # Parse arguments and flags
 CMDS=()
@@ -130,11 +139,5 @@ while [ "$#" -gt 0 ]; do
   esac
 done
 
-srcs=${OL_ROOT}/howi-bash-bot/src
-for src in ${srcs}/*; do
-  case "$src" in
-    *.sh) source $src ;;
-  esac
-done
 # run command
 hbot::run "${CMDS[@]}"
