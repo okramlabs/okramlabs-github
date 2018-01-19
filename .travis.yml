@@ -24,7 +24,7 @@ cache:
 
 ################################################################################
 # Templates
-tmpl-test-deployment: &tmpl-test-deployment
+&tmpl-test-deployment
   stage: test okramlabs.github.io deployment
   language: go
   go: 1.9
@@ -70,7 +70,7 @@ stages:
   # may need to explicitly set that in jobs under that stage
   # there is validation issue with stages
   - name: create new release
-    if: (repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (branch = master) AND (tag IS present)
+    if: (repo = okramlabs/okramlabs.github.src) AND (head_repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (branch = master) AND (tag IS present)
 
 ################################################################################
 # jobs
