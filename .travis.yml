@@ -72,22 +72,22 @@ stages:
     if: type IN (push, pull_request)
   # generate assets and additional content
   - name: generate assets and additional content
-    if: (type = push) AND (branch = master)
+    if: (type IS push) AND (branch IS master)
   # build theme
   - name: build theme
-    if: (type = push) AND (branch = master)
+    if: (type IS push) AND (branch IS master)
   # build site
   - name: build site
-    if: (type = push) AND (branch = master)
+    if: (type IS push) AND (branch IS master)
   # deploy okramlabs.github.io
   - name: deploy okramlabs.github.io
-    if: (type = push) AND (branch = master)
+    if: (type IS push) AND (branch IS master)
   # test okramlabs.github.io deployment
   - name: test okramlabs.github.io deployment
-    if: (type = push) AND (branch = master)
+    if: (type IS push) AND (branch IS master)
   # create new release
   - name: create new release
-    if: (type = push) AND (tag IS present) AND (tag =~ ^v$)
+    if: (tag IS present) AND (tag =~ ^v$) AND (repo IS okramlabs/okramlabs.github.src) AND (NOT type IS pull_request)
 
 jobs:
   include:
@@ -146,12 +146,10 @@ jobs:
       language: go
       go: 1.9
       script: echo "create new release ..."
-      before_deploy: echo "after_deploy okramlabs.github.io"
+      before_deploy: echo "before_deploy okramlabs.github.io"
       deploy:
         skip_cleanup: true
         provider: script
         script: echo "deploy release to github"
-        on:
-          tags: true
-          all_branches: false
+
       after_deploy: echo "after_deploy okramlabs.github.io"
