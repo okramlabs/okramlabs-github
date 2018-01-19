@@ -24,7 +24,7 @@ cache:
 
 ################################################################################
 # Templates
-&tmpl-test-deployment
+&tmpl-test-deployment:
   stage: test okramlabs.github.io deployment
   language: go
   go: 1.9
