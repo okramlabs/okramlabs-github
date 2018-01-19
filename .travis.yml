@@ -86,7 +86,7 @@ stages:
   - name: test okramlabs.github.io deployment
     if: (type = push) AND (branch = master)
   # create new release
-  - name: publish it
+  - name: create new release
     if: (type = push) AND (tag IS present) AND (tag =~ ^v1) AND (repo = okramlabs/okramlabs.github.src)
 
 jobs:
@@ -141,14 +141,17 @@ jobs:
       env: TASK=test-site-2
 
     # if this is a release run additional tasks
-    - stage: publish it
+    - stage: create new release
+      env: TASK=upload-github-release
       language: go
       go: 1.9
-      env: TASK=upload-github-release
+      script: echo "create new release ..."
+      before_deploy: echo "after_deploy okramlabs.github.io"
       deploy:
-        provider: releases
         skip_cleanup: true
-        api_key: "$GITHUB_OAUTH_TOKEN"
+        provider: script
+        script: echo "deploy release to github"
         on:
           tags: true
           all_branches: false
+      after_deploy: echo "after_deploy okramlabs.github.io"
