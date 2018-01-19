@@ -24,11 +24,12 @@ cache:
 
 ################################################################################
 # Templates
-&tmpl-test-deployment:
-  stage: test okramlabs.github.io deployment
-  language: go
-  go: 1.9
-  script: 'curl https://okramlabs.github.io'
+templates:
+  - &tmpl-test-deployment
+    stage: test okramlabs.github.io deployment
+    language: go
+    go: 1.9
+    script: 'curl https://okramlabs.github.io'
 
 ################################################################################
 # defaults
