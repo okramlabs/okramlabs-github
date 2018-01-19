@@ -50,6 +50,15 @@ cache:
   timeout: 180
   yarn: true
 
+################################################################################
+# Templates
+tmpl-test-deployment: &tmpl-test-deployment
+  stage: test okramlabs.github.io deployment
+  env: TASK=test-site
+  language: go
+  go: 1.9
+  script: 'curl https://okramlabs.github.io'
+
 before_install: skip
 install: skip
 before_script: skip
@@ -59,10 +68,7 @@ after_failure: skip
 after_script: skip
 
 stages:
-  - name: test theme
-    if: type IN (push, pull_request)
-
-  - name: test site
+  - name: test src
     if: type IN (push, pull_request)
 
   - name: prepare cache
@@ -87,12 +93,13 @@ stages:
 
 jobs:
   include:
-    - stage: test theme
+    - stage: test src
+      env: TASK=test-theme
       language: node_js
       node_js: node
       script: echo "running tests" | tee > ~/build-cache/one
 
-    - stage: test site
+    - env: TASK=test-site
       language: go
       go: 1.9
       script: echo "running test site" | tee > ~/build-cache/test-site
@@ -129,18 +136,11 @@ jobs:
           branch: master
       after_deploy: echo "after_deploy okramlabs.github.io"
 
-    - &test-deployment
-      stage: test okramlabs.github.io deployment
-      env: TASK=test-site
-      language: go
-      go: 1.9
-      script: 'curl https://okramlabs.github.io'
-
-    - <<: *test-deployment
+    - <<: *tmpl-test-deployment
       env: TASK=test-site-2
       script: echo "Testing deployment 2 ..."
 
-    - <<: *test-deployment
+    - <<: *tmpl-test-deployment
       script: echo "Testing deployment  3 ..."
       env: TASK=test-site-3
 
