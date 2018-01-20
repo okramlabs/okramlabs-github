@@ -1,21 +1,22 @@
+################################################################################
+# Travis CI configuration
+# Docs: https://docs.travis-ci.com/
+# About Stages: https://docs.travis-ci.com/user/build-stages/
+#
 sudo: false
-
 dist: trusty
 
-################################################################################
-# addons
+# https://docs.travis-ci.com/user/installing-dependencies/#Installing-Packages-with-the-APT-Addon
 addons:
   apt:
     packages:
       - python-pygments
 
-################################################################################
-# notifications
+# https://docs.travis-ci.com/user/notifications/
 notifications:
   email: false
 
-################################################################################
-# cache
+# https://docs.travis-ci.com/user/caching/
 cache:
   directories:
     - $HOME/build-cache
@@ -31,7 +32,6 @@ templates:
     go: 1.9
     script: 'curl https://okramlabs.github.io'
 
-################################################################################
 # defaults
 before_install: skip
 install: skip
@@ -60,11 +60,14 @@ stages:
   - name: build site
     if: (type = push) AND (branch = master)
   # deploy okramlabs.github.io
-  - name: deploy okramlabs.github.io
-    if: (type = push) AND (branch = master)
+  - name: deploy staging
+    if: (repo = okramlabs/okramlabs.github.src) AND (type = push) AND (branch = master) AND (NOT tag IS present)
+  # deploy okramlabs.github.io
+  - name: deploy production
+    if: (repo = okramlabs/okramlabs.github.src) AND (head_repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (branch = master) AND (tag IS present)
   # test okramlabs.github.io deployment
-  - name: test okramlabs.github.io deployment
-    if: (type = push) AND (branch = master)
+  - name: test deployments
+    if: (repo = okramlabs/okramlabs.github.src) AND (type = push) AND (branch = master)
   # create new release (only on tags on upstream)
   # pull request should never build that stage
   # only tags created from master of okramlabs/okramlabs.github.src
@@ -110,11 +113,26 @@ jobs:
       go: 1.9
       script: echo "running build site" | tee > ~/build-cache/build-site
     # deploy to deploy okramlabs.github.io master
-    - stage: deploy okramlabs.github.io
+    - stage: deploy staging
       language: go
       go: 1.9
+      env: TASK=deploy okramlabs.github.src
+      script: echo "deploy okramlabs.github.src script"
+      before_deploy: echo "before_deploy okramlabs.github.src"
+      deploy:
+        skip_cleanup: true
+        provider: script
+        script: echo "deploy okramlabs.github.io"
+        on:
+          branch: master
+      after_deploy: echo "after_deploy okramlabs.github.src"
+    # deploy to deploy okramlabs.github.io master
+    - stage: deploy production
+      language: go
+      go: 1.9
+      env: TASK=deploy okramlabs.github.io
       script: echo "deploy okramlabs.github.io script"
-      before_deploy: echo "after_deploy okramlabs.github.io"
+      before_deploy: echo "before_deploy okramlabs.github.io"
       deploy:
         skip_cleanup: true
         provider: script
@@ -125,12 +143,12 @@ jobs:
 
     # test this deployment
     - <<: *tmpl-test-deployment
-      env: TASK=test-site-1
-      script: echo "Testing deployment 1 ..."
+      env: TASK=okramlabs.github.io
+      script: 'curl https://okramlabs.github.io'
 
     - <<: *tmpl-test-deployment
       script: echo "Testing deployment 2 ..."
-      env: TASK=test-site-2
+      env: TASK=test-something else
 
     # if this is a release run additional tasks
     - stage: create new release
