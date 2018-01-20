@@ -27,7 +27,7 @@ cache:
 # Templates
 templates:
   - &tmpl-test-deployment
-    stage: test okramlabs.github.io deployment
+    stage: test deployments
     language: go
     go: 1.9
     script: 'curl https://okramlabs.github.io'
@@ -82,7 +82,7 @@ jobs:
   include:
     # test theme source
     - stage: verify pull request
-      env: TASK=checks
+      env: TASK=perform-checks
       language: go
       go: 1.9
       script: echo "verify pull request"
@@ -99,25 +99,27 @@ jobs:
       script: echo "running test site" | tee > ~/build-cache/test-site
     # generaate content and assets
     - stage: generate assets and additional content
+      env: TASK=generate-assets
       language: go
       go: 1.9
       script: echo "running generate assets" | tee > ~/build-cache/generate-assets
     # build a fresh theme
     - stage: build theme
+      env: TASK=build-hugo-theme
       language: node_js
       node_js: node
       script: echo "running build theme" | tee > ~/build-cache/build-theme
     # build new site with theme built on previous step
     - stage: build site
+      env: TASK=build-hugo-site
       language: go
       go: 1.9
       script: echo "running build site" | tee > ~/build-cache/build-site
     # deploy to deploy okramlabs.github.io master
     - stage: deploy staging
+      env: TASK=deploy okramlabs.github.src
       language: go
       go: 1.9
-      env: TASK=deploy okramlabs.github.src
-      name: deploy okramlabs.github.src
       script: echo "deploy okramlabs.github.src script"
       before_deploy: echo "before_deploy okramlabs.github.src"
       deploy:
@@ -129,9 +131,9 @@ jobs:
       after_deploy: echo "after_deploy okramlabs.github.src"
     # deploy to deploy okramlabs.github.io master
     - stage: deploy production
+      env: TASK=deploy okramlabs.github.io
       language: go
       go: 1.9
-      env: TASK=deploy okramlabs.github.io
       script: echo "deploy okramlabs.github.io script"
       before_deploy: echo "before_deploy okramlabs.github.io"
       deploy:
@@ -144,12 +146,12 @@ jobs:
 
     # test this deployment
     - <<: *tmpl-test-deployment
-      env: TASK=okramlabs.github.io
-      script: 'curl https://okramlabs.github.io'
+      env: TASK=okramlabs.github.src
+      if: (repo = okramlabs/okramlabs.github.src) AND (type = push) AND (branch = master) AND (NOT tag IS present)
 
     - <<: *tmpl-test-deployment
-      script: echo "Testing deployment 2 ..."
-      env: TASK=test-something else
+      env: TASK=okramlabs.github.io
+      if: (repo = okramlabs/okramlabs.github.src) AND (head_repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (branch = master) AND (tag IS present)
 
     # if this is a release run additional tasks
     - stage: create new release
