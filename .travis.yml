@@ -52,29 +52,29 @@ stages:
     if: type IN (push, pull_request)
   # generate assets and additional content
   - name: generate assets and additional content
-    if: (type = push) AND (branch = master)
+    if: (type = push) AND (branch = master OR tag IS present)
   # build theme
   - name: build theme
-    if: (type = push) AND (branch = master)
+    if: (type = push) AND (branch = master OR tag IS present)
   # build site
   - name: build site
-    if: (type = push) AND (branch = master)
+    if: (type = push) AND (branch = master OR tag IS present)
   # deploy okramlabs.github.io
   - name: deploy staging
     if: (repo = okramlabs/okramlabs.github.src) AND (type = push) AND (branch = master) AND (NOT tag IS present)
   # deploy okramlabs.github.io
   - name: deploy production
-    if: (repo = okramlabs/okramlabs.github.src) AND (head_repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (branch = master) AND (tag IS present)
+    if: (repo = okramlabs/okramlabs.github.src) AND (head_repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (tag IS present)
   # test okramlabs.github.io deployment
   - name: test deployments
-    if: (repo = okramlabs/okramlabs.github.src) AND (type = push) AND (branch = master)
+    if: (repo = okramlabs/okramlabs.github.src) AND (type = push) AND (branch = master OR tag IS present)
   # create new release (only on tags on upstream)
   # pull request should never build that stage
   # only tags created from master of okramlabs/okramlabs.github.src
   # may need to explicitly set that in jobs under that stage
   # there is validation issue with stages
   - name: create new release
-    if: (repo = okramlabs/okramlabs.github.src) AND (head_repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (branch = master) AND (tag IS present)
+    if: (repo = okramlabs/okramlabs.github.src) AND (head_repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (tag IS present)
 
 ################################################################################
 # jobs
