@@ -62,7 +62,7 @@ stages:
   # deploy okramlabs.github.io
   - name: deploy staging
     if: (repo = okramlabs/okramlabs.github.src) AND (type = push) AND (branch = master) AND (NOT tag IS present)
-  # deploy okramlabs.github.io
+  # deploy okramlabs.github.io (only on tags on upstream)
   - name: deploy production
     if: (repo = okramlabs/okramlabs.github.src) AND (head_repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (tag IS present)
   # test okramlabs.github.io deployment
