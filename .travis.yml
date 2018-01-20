@@ -64,7 +64,7 @@ stages:
     if: (repo = okramlabs/okramlabs.github.src) AND (type = push) AND (branch = master) AND (NOT tag IS present)
   # deploy okramlabs.github.io (only on tags on upstream)
   - name: deploy production
-    if: (repo = okramlabs/okramlabs.github.src) AND (head_repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (tag IS present)
+    if: (repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (tag IS present)
   # test okramlabs.github.io deployment
   - name: test deployments
     if: (repo = okramlabs/okramlabs.github.src) AND (type = push) AND (branch = master OR tag IS present)
@@ -74,7 +74,7 @@ stages:
   # may need to explicitly set that in jobs under that stage
   # there is validation issue with stages
   - name: create new release
-    if: (repo = okramlabs/okramlabs.github.src) AND (head_repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (tag IS present)
+    if: (repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (tag IS present)
 
 ################################################################################
 # jobs
@@ -151,7 +151,7 @@ jobs:
 
     - <<: *tmpl-test-deployment
       env: OL_TASK=okramlabs.github.io
-      if: (repo = okramlabs/okramlabs.github.src) AND (head_repo = okramlabs/okramlabs.github.src) AND (NOT type = pull_request) AND (branch = master) AND (tag IS present)
+      if: (repo = okramlabs/okramlabs.github.src) AND (type = push) AND (tag IS present)
 
     # if this is a release run additional tasks
     - stage: create new release
