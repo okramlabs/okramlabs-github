@@ -117,6 +117,7 @@ jobs:
       language: go
       go: 1.9
       env: TASK=deploy okramlabs.github.src
+      name: deploy okramlabs.github.src
       script: echo "deploy okramlabs.github.src script"
       before_deploy: echo "before_deploy okramlabs.github.src"
       deploy:
