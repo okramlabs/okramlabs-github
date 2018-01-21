@@ -11,6 +11,7 @@ OL_HR="#########################################################################
 OL_PATH_CMDS="$OL_ROOT/howibot-bash/commands"
 OL_PATH_SRC="$OL_ROOT/howibot-bash/src"
 OL_PATH_RES="$OL_ROOT/howibot-bash/res"
+OL_PATH_THEME="$OL_ROOT/themes"
 
 if hash gdate 2>/dev/null; then
   OL_TODAY=$(gdate --rfc-3339=seconds | sed 's/ /T/')
@@ -27,5 +28,8 @@ else
   OL_GIT_USER_EMAIL=$(git config --global user.email)
 fi
 
+# theme
+OL_THEME_NAME="okramlabs"
+OL_THEME_ROOT="$OL_PATH_THEME/$OL_THEME_NAME"
 
 : "${HOWIBOT:=""}"

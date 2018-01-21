@@ -1,0 +1,29 @@
+{
+  "name": "hugo-okramlabs-theme",
+  "version": "1.0.0",
+  "description": "hugo theme for https://okramlabs.github.io",
+  "main": "src/index.js",
+  "repository": "git@github.com:okramlabs/okramlabs.github.src.git",
+  "author": "Marko Kungla",
+  "license": "Apache-2.0",
+  "scripts": {
+    "lint": "npm-run-all lint:*",
+    "lint:stylelint": "stylelint './src/sass/**/*.scss' --syntax scss",
+    "lint:standard": "standard src/js/**/*.js",
+    "test": "echo \"no tests\""
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.1",
+    "npm-run-all": "^4.1.2",
+    "snazzy": "^7.0.0",
+    "standard": "^10.0.3",
+    "stylelint": "^8.4.0",
+    "stylelint-config-standard": "^18.0.0"
+  },
+  "semistandard": {
+    "parser": "babel-eslint",
+    "ignore": [
+      "config/**"
+    ]
+  }
+}

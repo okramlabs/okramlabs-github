@@ -9,6 +9,7 @@ hbb::task::start() {
 }
 
 hbb::task::done() {
+  cd $OL_ROOT
   local timer=$(echo "$(date +%s.%N) - $hbb_taskstart" | bc)
   hbb::logok $(printf "\033[1mtask done:\033[0m %s" "$hbb_taskname")
   hbb::loginfo $(printf "\033[1mexecution time:\033[0m %.6f seconds" "$timer")

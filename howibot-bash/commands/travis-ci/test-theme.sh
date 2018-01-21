@@ -10,7 +10,30 @@
 
 hbb::travis_ci::test_theme() {
   hbb::task::start "travis-ci/test-theme"
-  hbb::travis_ci::help
-  hbb::task::failed
+
+
+  if ! hbb::has_env_with_val "OL_THEME_NAME" "okramlabs"; then
+    hbb::logwarn "this pipeline supports only hugo-okramlabs-theme"
+    hbb::task::failed
+  fi
+
+  if ! hbb::is_dir $OL_THEME_ROOT; then
+    hbb::logerr "hugo-okramlabs-theme not found in themes/okramlabs"
+    hbb::task::failed
+  fi
+
+  cd $OL_THEME_ROOT
+  hbb::logok "cd $OL_THEME_ROOT"
+
+  yarn install
+  hbb::logok "yarn install"
+
+  yarn lint
+  hbb::logok "yarn lint"
+
+  yarn test
+  hbb::logok "yarn test"
+
+  hbb::task::done
 }
 hbb::travis_ci::test_theme
