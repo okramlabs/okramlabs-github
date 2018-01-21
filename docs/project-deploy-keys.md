@@ -51,7 +51,7 @@ travis encrypt-file ./tmp/howibot
 ```
 
 ```
-mv howibot.enc ./howi-bash-bot/res/travis-ci/howibot_deploy_key.enc
+mv howibot.enc ./howibot-bash/res/travis-ci/howibot_deploy_key.enc
 ```
 
 ## remove private and public kes locally

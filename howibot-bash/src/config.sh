@@ -8,9 +8,9 @@
 OL_DIV="--------------------------------------------------------------------------------"
 OL_HR="################################################################################"
 
-OL_PATH_CMDS="$OL_ROOT/howi-bash-bot/commands"
-OL_PATH_SRC="$OL_ROOT/howi-bash-bot/src"
-OL_PATH_RES="$OL_ROOT/howi-bash-bot/res"
+OL_PATH_CMDS="$OL_ROOT/howibot-bash/commands"
+OL_PATH_SRC="$OL_ROOT/howibot-bash/src"
+OL_PATH_RES="$OL_ROOT/howibot-bash/res"
 
 if hash gdate 2>/dev/null; then
   OL_TODAY=$(gdate --rfc-3339=seconds | sed 's/ /T/')

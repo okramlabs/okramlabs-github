@@ -1,17 +1,17 @@
 #!/bin/bash
 
-hbot::get_commands() {
+hbb::get_commands() {
   eval "${1}=()"
   for cmd in $OL_PATH_CMDS/*; do
       [[ -d $cmd ]] && eval "${1}+=(\"$(basename ${cmd})\")"
   done
 }
 
-hbot::hr() {
-  hbot::logline $OL_DIV
+hbb::hr() {
+  hbb::logline $OL_DIV
 }
 
-hbot::is_dir(){
+hbb::is_dir(){
   if [[ -d $1 ]] && [[ -n $1 ]] ; then
     return 0
   else
@@ -19,7 +19,7 @@ hbot::is_dir(){
   fi
 }
 
-hbot::file_exists(){
+hbb::file_exists(){
   if [[ -f $1 ]] && [[ -n $1 ]] ; then
     return 0
   else
