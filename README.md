@@ -3,6 +3,9 @@
 [![Source license badge][license-src-img]][license-src-link]
 [![TravisCI Build Status][travis-img]][travis-link]
 
+- **staging:** [okramlabs.github.src]
+- **production** [okramlabs.github.io]
+
 ## License
 
 The content and assets of this project itself is licensed under the [Creative Commons Attribution 4.0][license-content-link] license, and the underlying source code of [okramlabs.github.io] is licensed under the [Apache-2.0][license-src-link] license.
@@ -17,6 +20,7 @@ The content and assets of this project itself is licensed under the [Creative Co
 [license-content-link]: LICENSE-content
 
 [okramlabs.github.io]: https://okramlabs.github.io/
+[okramlabs.github.src]: https://okramlabs.github.io/okramlabs.github.src
 
 <!-- travis-ci -->
 [travis-img]: https://travis-ci.org/okramlabs/okramlabs.github.src.svg?branch=master

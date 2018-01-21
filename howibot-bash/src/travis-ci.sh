@@ -12,8 +12,21 @@ hbb::travis_ci::help() {
   hbb::logbold " TRAVIS-CI COMMANDS"
   hbb::logline
   hbb::logline "    Travis CI Stage management"
+  hbb::logline "    OPTIONAL Install apt addons and cache components can be added to travis yaml"
   hbb::logline
   hbb::helpcmd "   travis-ci  " "<command> [arg...]"
+  hbb::logline
+  hbb::helpcmd "     build-site                 " "build site (backend) using latest theme."
+  hbb::helpcmd "     build-theme                " "build theme/frontend"
+  hbb::helpcmd "     create-github-release      " "create GitHub release for production and upload release assets."
+  hbb::helpcmd "     deploy-production          " "deploy to production."
+  hbb::helpcmd "     deploy-staging             " "deploy to staging."
+  hbb::helpcmd "     generate-assets            " "create assets from resources e.g variations from main logo, scale etc."
+  hbb::helpcmd "     test-deployment-production " "run tasks to verify production deployment."
+  hbb::helpcmd "     test-deployment-staging    " "run tasks to verify staging deployment."
+  hbb::helpcmd "     test-site                  " "test okramlabs.github.io site source (backend)."
+  hbb::helpcmd "     test-theme                 " "test okramlabs.github.io frontend source."
+  hbb::helpcmd "     verify-pull-request        " "verify PR's, like CLA etc. before any other build step."
   hbb::logline
 }
 
@@ -27,14 +40,6 @@ hbb::travis_ci::true() {
   fi
 }
 
-# hbb::travis_ci::help() {
-#   hbb::logbold "  TRAVIS COMMANDS"
-#   hbb::logline
-#   hbb::logline "    OPTIONAL Install apt addons and cache components can be added to travis yaml"
-#   hbb::logline
-#   hbb::helpcmd "   travis-ci             " "<command> [arg...]"
-#   hbb::logline
-#   hbb::helpcmd "     before_install      " "1. Install additional dependencies required by job"
 #   hbb::helpcmd "     install             " "2. Install any dependencies required by project build"
 #   hbb::helpcmd "     before_script       " "3. Scripts to run to prepare job"
 #   hbb::helpcmd "     script              " "4. Main job script"
@@ -45,5 +50,3 @@ hbb::travis_ci::true() {
 #   hbb::helpcmd "     deploy              " "8. OPTIONAL deploy"
 #   hbb::helpcmd "     after_deploy        " "9. OPTIONAL after deploy"
 #   hbb::helpcmd "     after_script        " "10. run scripts at last"
-#   hbb::logline
-# }

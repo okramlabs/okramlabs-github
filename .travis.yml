@@ -82,42 +82,42 @@ jobs:
   include:
     # test theme source
     - stage: verify pull request
-      env: OL_TASK=perform-checks
+      env: HOWIBOT=verify-pul-request
       language: go
       go: 1.9
       script: echo "verify pull request"
     # test theme source
     - stage: test source
-      env: OL_TASK=test-theme
+      env: HOWIBOT=test-theme
       language: node_js
       node_js: node
       script: echo "running tests" | tee > ~/build-cache/one
     # test site source
-    - env: OL_TASK=test-site
+    - env: HOWIBOT=test-site
       language: go
       go: 1.9
       script: echo "running test site" | tee > ~/build-cache/test-site
     # generaate content and assets
     - stage: generate assets and additional content
-      env: OL_TASK=generate-assets
+      env: HOWIBOT=generate-assets
       language: go
       go: 1.9
       script: echo "running generate assets" | tee > ~/build-cache/generate-assets
     # build a fresh theme
     - stage: build theme
-      env: OL_TASK=build-hugo-theme
+      env: HOWIBOT=build-theme
       language: node_js
       node_js: node
       script: echo "running build theme" | tee > ~/build-cache/build-theme
     # build new site with theme built on previous step
     - stage: build site
-      env: OL_TASK=build-hugo-site
+      env: HOWIBOT=build-site
       language: go
       go: 1.9
       script: echo "running build site" | tee > ~/build-cache/build-site
     # deploy to deploy okramlabs.github.io master
     - stage: deploy staging
-      env: OL_TASK=okramlabs.github.src
+      env: HOWIBOT=deploy-staging
       language: go
       go: 1.9
       script: echo "deploy okramlabs.github.src script"
@@ -131,7 +131,7 @@ jobs:
       after_deploy: echo "after_deploy okramlabs.github.src"
     # deploy to deploy okramlabs.github.io master
     - stage: deploy production
-      env: OL_TASK=okramlabs.github.io
+      env: HOWIBOT=deploy-production
       language: go
       go: 1.9
       script: echo "deploy okramlabs.github.io script"
@@ -146,16 +146,16 @@ jobs:
 
     # test this deployment
     - <<: *tmpl-test-deployment
-      env: OL_TASK=okramlabs.github.src
+      env: HOWIBOT=test-deployment-staging
       if: (repo = okramlabs/okramlabs.github.src) AND (type = push) AND (branch = master) AND (NOT tag IS present)
 
     - <<: *tmpl-test-deployment
-      env: OL_TASK=okramlabs.github.io
+      env: HOWIBOT=test-deployment-production
       if: (repo = okramlabs/okramlabs.github.src) AND (type = push) AND (tag IS present)
 
     # if this is a release run additional tasks
     - stage: create new release
-      env: OL_TASK=upload-github-release
+      env: HOWIBOT=create-github-release
       language: go
       go: 1.9
       script: echo "create new release for github ..."

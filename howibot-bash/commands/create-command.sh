@@ -21,7 +21,7 @@ hbb::create_command::create() {
   local cmdcreated="hbb::${cmdname//-/_}::${scmdname//-/_}"
   local cmdhelp="hbb::${cmdname//-/_}::help"
 
-  printf "Enter a command description: "
+  hbb::logline "Enter a command description: "
   read -r NEW_CMD_DESCRIPTION
   # write to a file.
   printf "%s \n%s \n%-16s%s \n%-16s%s \n%-16s%s \n%-16s%s \n%-16s%s \n%-16s%s \n%s \n\n%s\n%s\n" \
@@ -34,7 +34,11 @@ $OL_HR \
 "# date" ": $OL_TODAY" \
 "# bash_version" ": ${BASH_VERSION}" \
 $OL_HR \
-"$cmdcreated() { $cmdhelp; }" \
+"$cmdcreated() {
+  hbb::task::start \"$cmdname/$scmdname\"
+  $cmdhelp
+  hbb::task::failed
+}" \
 "$cmdcreated" > $1
 
   if [ "$scmdname" == "index" ]; then
