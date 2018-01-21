@@ -91,36 +91,36 @@ jobs:
       env: HOWIBOT=test-theme
       language: node_js
       node_js: node
-      script: ./howibot travis-ci build-theme
+      script: ./howibot travis-ci test-theme
     # test site source
     - env: HOWIBOT=test-site
       language: go
       go: 1.9
-      script: echo "running test site" | tee > ~/build-cache/test-site
+      script: ./howibot travis-ci test-site
     # generaate content and assets
     - stage: generate assets and additional content
       env: HOWIBOT=generate-assets
       language: go
       go: 1.9
-      script: echo "running generate assets" | tee > ~/build-cache/generate-assets
+      script: ./howibot travis-ci generate-assets
     # build a fresh theme
     - stage: build theme
       env: HOWIBOT=build-theme
       language: node_js
       node_js: node
-      script: echo "running build theme" | tee > ~/build-cache/build-theme
+      script: ./howibot travis-ci build-theme
     # build new site with theme built on previous step
     - stage: build site
       env: HOWIBOT=build-site
       language: go
       go: 1.9
-      script: echo "running build site" | tee > ~/build-cache/build-site
+      script: ./howibot travis-ci build-site
     # deploy to deploy okramlabs.github.io master
     - stage: deploy staging
       env: HOWIBOT=deploy-staging
       language: go
       go: 1.9
-      script: echo "deploy okramlabs.github.src script"
+      script: ./howibot travis-ci deploy-staging
       before_deploy: echo "before_deploy okramlabs.github.src"
       deploy:
         skip_cleanup: true
@@ -134,7 +134,7 @@ jobs:
       env: HOWIBOT=deploy-production
       language: go
       go: 1.9
-      script: echo "deploy okramlabs.github.io script"
+      script: ./howibot travis-ci deploy-production
       before_deploy: echo "before_deploy okramlabs.github.io"
       deploy:
         skip_cleanup: true
@@ -148,17 +148,19 @@ jobs:
     - <<: *tmpl-test-deployment
       env: HOWIBOT=test-deployment-staging
       if: (repo = okramlabs/okramlabs.github.src) AND (type = push) AND (branch = master) AND (NOT tag IS present)
+      script: ./howibot travis-ci test-deployment-staging
 
     - <<: *tmpl-test-deployment
       env: HOWIBOT=test-deployment-production
       if: (repo = okramlabs/okramlabs.github.src) AND (type = push) AND (tag IS present)
+      script: ./howibot travis-ci test-deployment-production
 
     # if this is a release run additional tasks
     - stage: create new release
       env: HOWIBOT=create-github-release
       language: go
       go: 1.9
-      script: echo "create new release for github ..."
+      script: ./howibot travis-ci create-github-release
       before_deploy: echo "before_deploy okramlabs.github.io"
       deploy:
         skip_cleanup: true
