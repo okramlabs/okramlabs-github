@@ -32,3 +32,4 @@
 *.jpg binary
 *.data binary
 *.so binary
+*.lock binary
