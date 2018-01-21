@@ -82,16 +82,16 @@ jobs:
   include:
     # test theme source
     - stage: verify pull request
-      env: HOWIBOT=verify-pul-request
+      env: HOWIBOT=verify-pull-request
       language: go
       go: 1.9
-      script: echo "verify pull request"
+      script: ./howibot travis-ci verify-pull-request
     # test theme source
     - stage: test source
       env: HOWIBOT=test-theme
       language: node_js
       node_js: node
-      script: echo "running tests" | tee > ~/build-cache/one
+      script: ./howibot travis-ci build-theme
     # test site source
     - env: HOWIBOT=test-site
       language: go

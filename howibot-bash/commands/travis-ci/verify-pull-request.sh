@@ -10,7 +10,21 @@
 
 hbb::travis_ci::verify_pull_request() {
   hbb::task::start "travis-ci/verify-pull-request"
-  hbb::travis_ci::help
-  hbb::task::failed
+
+  if ! hbb::travis_ci::true; then
+    hbb::task::failed
+  fi
+
+  if ! hbb::has_env_with_val "HOWIBOT" "verify-pull-request"; then
+    hbb::task::failed
+  fi
+
+  if hbb::has_cla; then
+    hbb::loginfo "should add label 'cla/yes'"
+  else
+    hbb::loginfo "should add label 'cla/no' || 'cla/pending'"
+  fi
+
+  hbb::task::done
 }
 hbb::travis_ci::verify_pull_request

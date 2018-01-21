@@ -6,6 +6,10 @@
 # bash_version  : 4.4.12(1)-release
 ################################################################################
 
+: "${CI:="false"}"
+: "${TRAVIS:="false"}"
+
+
 # add (travis-ci) shared methods and VARS here
 # this file is source also by subcommands of (travis-ci)
 hbb::travis_ci::help() {
@@ -32,10 +36,10 @@ hbb::travis_ci::help() {
 
 hbb::travis_ci::true() {
   if [[ "$CI" == "true" && $TRAVIS="true" ]]; then
-    hbb::loginfo "Travis CI $1"
+    hbb::loginfo "Travis CI"
     return 0
   else
-    hbb::loginfo "Travis CI $1 skip not a Travis CI build"
+    hbb::loginfo "Travis CI skip not a Travis CI"
     return 1
   fi
 }

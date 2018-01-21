@@ -26,3 +26,6 @@ else
   OL_GIT_USER_NAME=$(git config --global user.name)
   OL_GIT_USER_EMAIL=$(git config --global user.email)
 fi
+
+
+: "${HOWIBOT:=""}"
