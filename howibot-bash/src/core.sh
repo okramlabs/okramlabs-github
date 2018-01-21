@@ -1,5 +1,8 @@
 #!/bin/bash
 
+hbb::exit() {
+  exit $1
+}
 hbb::get_commands() {
   eval "${1}=()"
   for cmd in $OL_PATH_CMDS/*; do

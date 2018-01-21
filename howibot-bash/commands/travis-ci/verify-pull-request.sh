@@ -26,5 +26,6 @@ hbb::travis_ci::verify_pull_request() {
   fi
 
   hbb::task::done
+  hbb::exit 0
 }
 hbb::travis_ci::verify_pull_request

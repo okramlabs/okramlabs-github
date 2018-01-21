@@ -35,5 +35,6 @@ hbb::travis_ci::test_theme() {
   hbb::logok "yarn test"
 
   hbb::task::done
+  hbb::exit 0
 }
 hbb::travis_ci::test_theme
