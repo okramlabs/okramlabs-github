@@ -10,7 +10,22 @@
 
 hbb::travis_ci::deploy_staging() {
   hbb::task::start "travis-ci/deploy-staging"
-  hbb::logwarn "not configured"
+  # configure github
+  hbb:travis_ci::deploy_config
+  cd $OL_ROOT
+  git checkout -b deploy-to-github $TRAVIS_COMMIT
+  vim -u NONE +'1d' +wq! $TRAVIS_BUILD_DIR/.gitignore
+  rm $TRAVIS_BUILD_DIR/public/.gitkeep
+  cp $TRAVIS_BUILD_DIR/LICENSE-content $TRAVIS_BUILD_DIR/public/LICENSE
+  echo "<h1>okramlabs.github.io ($TRAVIS_BUILD_NUMBE)</h1> $TRAVIS_COMMIT" > $TRAVIS_BUILD_DIR/public/index.html
+  echo "Automated deployment of [okramlabs/okramlabs.github.src](https://github.com/okramlabs/okramlabs.github.src) repository" > $TRAVIS_BUILD_DIR/public/readme.md
+  # commit changes
+  git add -A
+  BUILDREF="$TRAVIS_TAG :bookmark:"
+  git commit -m"$BUILDREF ($TRAVIS_BUILD_NUMBER) deploy https://github.com/okramlabs/okramlabs.github.src/commit/$TRAVIS_COMMIT"
+  hbot::logok "script done"
+
+  git push gh-pages
   hbb::task::done
   hbb::exit 0
 }
