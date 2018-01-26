@@ -10,7 +10,8 @@
 
 hbb::travis_ci::create_github_release() {
   hbb::task::start "travis-ci/create-github-release"
-  hbb::travis_ci::help
-  hbb::task::failed
+  hbb::logwarn "not configured"
+  hbb::task::done
+  hbb::exit 0
 }
 hbb::travis_ci::create_github_release

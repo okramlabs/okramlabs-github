@@ -10,7 +10,8 @@
 
 hbb::travis_ci::build_site() {
   hbb::task::start "travis-ci/build-site"
-  hbb::travis_ci::help
-  hbb::task::failed
+  hbb::logwarn "no build"
+  hbb::task::done
+  hbb::exit 0
 }
 hbb::travis_ci::build_site

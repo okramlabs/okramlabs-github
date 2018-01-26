@@ -10,7 +10,8 @@
 
 hbb::travis_ci::deploy_production() {
   hbb::task::start "travis-ci/deploy-production"
-  hbb::travis_ci::help
-  hbb::task::failed
+  hbb::logwarn "not configured"
+  hbb::task::done
+  hbb::exit 0
 }
 hbb::travis_ci::deploy_production

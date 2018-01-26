@@ -10,7 +10,8 @@
 
 hbb::travis_ci::test_deployment_production() {
   hbb::task::start "travis-ci/test-deployment-production"
-  hbb::travis_ci::help
-  hbb::task::failed
+  hbb:travis_ci::deploy_config
+  hbb::task::done
+  hbb::exit 0
 }
 hbb::travis_ci::test_deployment_production

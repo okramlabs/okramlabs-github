@@ -44,6 +44,18 @@ hbb::travis_ci::true() {
   fi
 }
 
+hbb:travis_ci::deploy_config() {
+  declare -r SSH_FILE="$(mktemp -u ${HOME}/.ssh/XXXXX)"
+  openssl aes-256-cbc -K ${encrypted_86dc7fa5806f_key} -iv ${encrypted_86dc7fa5806f_iv} -in $OL_PATH_RES/travis-ci/howibot_deploy_key.enc -out "$SSH_FILE" -d
+  chmod 600 "$SSH_FILE" \
+    && printf "%s\n" \
+      "Host github.com" \
+      "  IdentityFile $SSH_FILE" \
+      "  LogLevel ERROR" >> ${HOME}/.ssh/config
+  git config user.email $OL_GIT_USER_NAME
+  git config user.name $OL_GIT_USER_EMAIL
+  hbb::logok "git setup done"
+}
 #   hbb::helpcmd "     install             " "2. Install any dependencies required by project build"
 #   hbb::helpcmd "     before_script       " "3. Scripts to run to prepare job"
 #   hbb::helpcmd "     script              " "4. Main job script"
