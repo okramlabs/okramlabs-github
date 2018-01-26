@@ -10,7 +10,8 @@
 
 hbb::travis_ci::generate_assets() {
   hbb::task::start "travis-ci/generate-assets"
-  hbb::travis_ci::help
-  hbb::task::failed
+  hbb::logwarn "no assets"
+  hbb::task::done
+  hbb::exit 0
 }
 hbb::travis_ci::generate_assets
