@@ -10,7 +10,8 @@
 
 hbb::travis_ci::test_site() {
   hbb::task::start "travis-ci/test-site"
-  hbb::travis_ci::help
-  hbb::task::failed
+  hbb::logwarn "no tests"
+  hbb::task::done
+  hbb::exit 0
 }
 hbb::travis_ci::test_site
